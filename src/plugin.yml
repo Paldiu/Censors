@@ -1,0 +1,20 @@
+name: Censors
+description: Censor plugin.
+version: 1.00 Alpha
+main: me.Paldiu.NNO.Main
+author: Paldiu
+
+commands:
+  censor:
+    description: The main command.
+    usage: /<command> <on | off>
+
+permissions:
+  censors.*:
+    description: All permissions.
+    default: false
+    children:
+      censors.censor: true
+  censors.censor:
+    description: Censors.
+    default: true
