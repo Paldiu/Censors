@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 public class Censor implements CommandExecutor
 {
+    private PlayerListener pl = new PlayerListener();
     public Main plugin;
     public Censor(Main instance)
     {
@@ -36,11 +37,11 @@ public class Censor implements CommandExecutor
                         {
                             case "on":
                                 p.sendMessage("Censor enabled.");
-                                PlayerListener.censorEnabled = true;
+                                pl.setCensorEnabled(true);
                                 return true;
                             case "off":
                                 p.sendMessage("Censor disabled.");
-                                PlayerListener.censorEnabled = false;
+                                pl.setCensorEnabled(false);
                                 return true;
                         }
                     }
