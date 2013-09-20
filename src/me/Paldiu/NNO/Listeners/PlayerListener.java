@@ -2,41 +2,56 @@ package me.Paldiu.NNO.Listeners;
 
 import java.util.List;
 import me.Paldiu.NNO.Main;
+import me.Paldiu.NNO.PlayerData;
+import me.Paldiu.NNO.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerListener implements Listener
 {
     public Main plugin;
-    public static boolean censorEnabled = false;
-    private List<String> BLOCKED_WORDS = plugin.getConfig().getStringList("blacklisted_words");
+    public static final List<String> BLOCKED_WORDS = Main.plugin.getConfig().getStringList("blacklisted_words");
     
-    @EventHandler
+@EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerChat(AsyncPlayerChatEvent event)
     {
-        Player p = event.getPlayer();
-        String message = event.getMessage();
-        if (isCensorEnabled(p))
+        try
         {
-            if (message.contains((CharSequence) BLOCKED_WORDS))
+            final Player player = event.getPlayer();
+            String message = event.getMessage().trim();
+            String[] args = message.split(".");
+
+            PlayerData playerdata = PlayerData.getPlayerData(player);
+            for (Player players : Bukkit.getServer().getOnlinePlayers())
             {
-               String finalMessage = event.getMessage().replace((CharSequence) BLOCKED_WORDS, "*****");
-               event.setCancelled(true);
-               p.sendMessage(finalMessage);
+                PlayerData pd = PlayerData.getPlayerData(players);
+                if (pd.censorIsEnabled())
+                {
+                    for (String word : BLOCKED_WORDS)
+                    {
+                        if (message.contains(word.toLowerCase()))
+                        {
+                            Util.censorReplaceMessage(players, message, args);
+                            event.setCancelled(true);
+                        }
+                        else
+                        {
+                        }
+                    }
+                }
+                else
+                {
+                    pd.setCensorEnabled(false);
+                }
             }
         }
+        catch (Exception ex)
+        {
+            Bukkit.getServer().getLogger().severe(ex.getMessage());
+        }
     }
-    
-    public void setCensorEnabled(boolean censorEnabled)
-    {
-        PlayerListener.censorEnabled = censorEnabled;
-    }
-
-    public boolean isCensorEnabled(Player p)
-    {
-        return censorEnabled;
-    }
-    
 }

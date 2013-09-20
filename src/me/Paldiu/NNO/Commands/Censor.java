@@ -2,6 +2,7 @@ package me.Paldiu.NNO.Commands;
 
 import me.Paldiu.NNO.Listeners.PlayerListener;
 import me.Paldiu.NNO.Main;
+import me.Paldiu.NNO.PlayerData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 
 public class Censor implements CommandExecutor
 {
-    private PlayerListener pl = new PlayerListener();
     public Main plugin;
     public Censor(Main instance)
     {
@@ -33,15 +33,16 @@ public class Censor implements CommandExecutor
                     }
                     else
                     {
+                        PlayerData playerdata = PlayerData.getPlayerData(p);
                         switch (args[0])
                         {
                             case "on":
                                 p.sendMessage("Censor enabled.");
-                                pl.setCensorEnabled(true);
+                                playerdata.setCensorEnabled(true);
                                 return true;
                             case "off":
                                 p.sendMessage("Censor disabled.");
-                                pl.setCensorEnabled(false);
+                                playerdata.setCensorEnabled(false);
                                 return true;
                         }
                     }
